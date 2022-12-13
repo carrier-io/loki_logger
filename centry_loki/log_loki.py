@@ -69,8 +69,7 @@ class CarrierLokiLogEmitter:  # pylint: disable=R0902
             })
         #
         self._connection.headers.update({
-            "Content-Type": "application/json",
-            "Content-Encoding": "gzip",
+            "Content-Type": "application/json"
         })
         #
         return self._connection
