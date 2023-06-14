@@ -18,7 +18,24 @@
 """
     Constants
 """
+from os import environ
 
+try:
+    from enum import StrEnum
+except ImportError:
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
+
+
+class FormatterMethods(StrEnum):
+    RE = 'replacer_re'
+    ITER = 'replacer_iter'
+
+
+FORMATTER_METHOD = environ.get('FORMATTER_METHOD', FormatterMethods.RE)
+LOG_SECRETS_REPLACER = environ.get('LOG_SECRETS_REPLACER', '***')
 
 LOG_FORMAT = "%(message)s"
 LOG_DATE_FORMAT = "%Y.%m.%d %H:%M:%S %Z"

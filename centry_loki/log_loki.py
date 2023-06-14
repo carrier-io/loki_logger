@@ -26,9 +26,12 @@ import logging
 import logging.handlers
 import traceback
 import threading
+from typing import Iterable, Union
+
 import requests  # pylint: disable=E0401
-from centry_loki.constants import LOG_FORMAT
+from centry_loki.constants import FormatterMethods, FORMATTER_METHOD
 import centry_loki.log as log
+from centry_loki.formatters import SecretFormatter
 
 
 class CarrierLokiLogEmitter:  # pylint: disable=R0902
@@ -257,7 +260,8 @@ class PeriodicFlush(threading.Thread):  # pylint: disable=R0903
             self.handler.flush()
 
 
-def get_logger(context):
+def get_logger(context: dict, secrets: Iterable = (),
+               formatter_method: Union[FormatterMethods, str] = FORMATTER_METHOD) -> logging.Logger:
     """ Enable logging to Loki """
     log.enable_logging()
     if context.get("buffering", False):
@@ -266,8 +270,9 @@ def get_logger(context):
         LokiLogHandler = CarrierLokiLogHandler
     #
     handler = LokiLogHandler(context)
-    handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    # handler.setFormatter(logging.Formatter(LOG_FORMAT))
     logger = logging.getLogger("centry_logger")
     logger.setLevel(logging.INFO)
     logger.addHandler(handler)
+    SecretFormatter(secrets, formatter_method).patch_logger(logger)
     return logger
