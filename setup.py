@@ -19,7 +19,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='loki_logger',
-    version='1.1.0',
+    version='1.1.1',
     description='Loki logger',
     url='https://getcarrier.io',
     license='Apache License 2.0',

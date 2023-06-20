@@ -31,7 +31,7 @@ class SecretFormatter(logging.Formatter):
 
     @property
     def re_pattern(self):
-        return re.compile(r'\b(?:{})\b'.format('|'.join(self.secrets)))
+        return re.compile(r'\b(?:{})\b'.format('|'.join(map(re.escape, self.secrets))))
 
     def replacer_re(self, text: str) -> str:
         # replaces only separate words
@@ -51,4 +51,5 @@ class SecretFormatter(logging.Formatter):
         for handler_ in logger_.handlers:
             if isinstance(handler_.formatter, self.__class__):
                 self.secrets.update(handler_.formatter.secrets)
+                self.__censor_stop_words()
             handler_.setFormatter(self)
